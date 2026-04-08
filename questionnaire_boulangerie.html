@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire — Gestion de la Boulangerie</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #d4a24e;
+    --accent-light: #f5e6c8;
+    --bg: #faf7f2;
+    --card-bg: #ffffff;
+    --text: #2c2c2c;
+    --text-light: #6b7280;
+    --border: #e5e0d8;
+    --input-bg: #faf8f5;
+    --success: #2d8a4e;
+    --success-bg: #e8f5ed;
+    --shadow: 0 2px 12px rgba(26, 58, 92, 0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: var(--primary);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 140%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(212, 162, 78, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: #fff;
+    margin-bottom: 0.4rem;
+    position: relative;
+  }
+
+  .header p {
+    color: var(--accent-light);
+    font-size: 0.95rem;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .bread-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    display: block;
+    position: relative;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .progress-bar {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .progress-bar .label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+
+  .progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), #e8b960);
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
+  .section {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+
+  .section:hover {
+    border-color: var(--accent);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 2px solid var(--accent-light);
+  }
+
+  .section-number {
+    background: var(--primary);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    color: var(--primary);
+  }
+
+  .question-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .question-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .question-label {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+
+  .question-hint {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  textarea, input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--text);
+    background: var(--input-bg);
+    transition: all 0.3s;
+    outline: none;
+    resize: vertical;
+  }
+
+  textarea:focus, input[type="text"]:focus, input[type="number"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 162, 78, 0.15);
+    background: #fff;
+  }
+
+  textarea {
+    min-height: 80px;
+  }
+
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+  }
+
+  .radio-option {
+    position: relative;
+  }
+
+  .radio-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .radio-option label {
+    display: block;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--input-bg);
+    font-weight: 500;
+  }
+
+  .radio-option input:checked + label {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--primary);
+  }
+
+  .radio-option label:hover {
+    border-color: var(--accent);
+  }
+
+  .conditional {
+    display: none;
+    margin-top: 0.8rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--accent-light);
+    padding-top: 0.5rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .conditional.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .submit-section {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary), #264d73);
+    color: #fff;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(26, 58, 92, 0.3);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 58, 92, 0.4);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+  .summary-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .summary-overlay.show {
+    display: flex;
+  }
+
+  .summary-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .summary-card h2 {
+    font-family: 'DM Serif Display', serif;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+  }
+
+  .summary-card .success-msg {
+    background: var(--success-bg);
+    color: var(--success);
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .summary-section {
+    margin-bottom: 1rem;
+  }
+
+  .summary-section h3 {
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+  }
+
+  .summary-item {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+
+  .summary-item strong {
+    color: var(--primary);
+  }
+
+  .summary-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-copy, .btn-close {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-copy {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .btn-copy:hover { background: #c4932e; }
+
+  .btn-close {
+    background: var(--border);
+    color: var(--text);
+  }
+
+  .btn-close:hover { background: #d5d0c8; }
+
+  .copied-toast {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--success);
+    color: #fff;
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    z-index: 200;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  .copied-toast.show {
+    display: block;
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2s forwards;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  @keyframes toastOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @media (max-width: 480px) {
+    .header h1 { font-size: 1.4rem; }
+    .section { padding: 1.2rem; }
+    .container { padding: 1rem 0.75rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="bread-icon">🍞</span>
+  <h1>Questionnaire Boulangerie</h1>
+  <p>Remplissez ce formulaire pour nous aider à créer votre application de gestion sur mesure</p>
+</div>
+
+<div class="container">
+  <div class="progress-bar">
+    <div class="label">
+      <span>Progression</span>
+      <span id="progressText">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- Section 1 : Le pain -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">Le pain et les prix</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Combien de types de pain vendez-vous ?</label>
+      <span class="question-hint">Exemple : un seul type ou plusieurs tailles (petit, moyen, grand…)</span>
+      <input type="text" name="types_pain" data-q="1" placeholder="Ex : 2 types — petit pain et grand pain">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Quel est le prix de chaque type de pain ?</label>
+      <span class="question-hint">Indiquez le prix en FCFA pour chaque type</span>
+      <input type="text" name="prix_pain" data-q="1" placeholder="Ex : petit pain 150 FCFA, grand pain 200 FCFA">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Le prix en gros pour les boutiquiers est-il différent ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="prix_gros" id="prix_gros_oui" value="oui" data-q="1" onchange="toggleConditional('prix_gros_detail', true); updateProgress();">
+          <label for="prix_gros_oui">Oui</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="prix_gros" id="prix_gros_non" value="non" data-q="1" onchange="toggleConditional('prix_gros_detail', false); updateProgress();">
+          <label for="prix_gros_non">Non, même prix</label>
+        </div>
+      </div>
+      <div class="conditional" id="prix_gros_detail">
+        <label class="question-label">Quel est le prix en gros ?</label>
+        <input type="text" name="prix_gros_detail" placeholder="Ex : 175 FCFA le pain en gros">
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 2 : Les boutiquiers -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">Les boutiquiers</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Combien de boutiquiers livrez-vous environ ?</label>
+      <input type="text" name="nb_boutiquiers" data-q="1" placeholder="Ex : 15 boutiquiers">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Chaque boutiquier a-t-il une commande fixe ou ça varie ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="commande_type" id="cmd_fixe" value="fixe" data-q="1" onchange="updateProgress();">
+          <label for="cmd_fixe">Commande fixe</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="commande_type" id="cmd_variable" value="variable" data-q="1" onchange="updateProgress();">
+          <label for="cmd_variable">Ça varie</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="commande_type" id="cmd_mixte" value="mixte" data-q="1" onchange="updateProgress();">
+          <label for="cmd_mixte">Les deux</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Comment se fait le paiement avec les boutiquiers ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="paiement_bout" id="pay_comptant" value="comptant" data-q="1" onchange="toggleConditional('credit_detail', false); updateProgress();">
+          <label for="pay_comptant">Comptant</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="paiement_bout" id="pay_credit" value="credit" data-q="1" onchange="toggleConditional('credit_detail', true); updateProgress();">
+          <label for="pay_credit">À crédit</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="paiement_bout" id="pay_deux" value="les_deux" data-q="1" onchange="toggleConditional('credit_detail', true); updateProgress();">
+          <label for="pay_deux">Les deux</label>
+        </div>
+      </div>
+      <div class="conditional" id="credit_detail">
+        <label class="question-label">À quelle fréquence paient-ils ?</label>
+        <span class="question-hint">Chaque jour, chaque semaine, chaque mois…</span>
+        <input type="text" name="frequence_paiement" placeholder="Ex : chaque semaine">
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 3 : Les livreurs -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">Les livreurs</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Combien de livreurs avez-vous ?</label>
+      <input type="text" name="nb_livreurs" data-q="1" placeholder="Ex : 3 livreurs">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Comment sont-ils payés ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="paie_livreur" id="liv_fixe" value="fixe" data-q="1" onchange="updateProgress();">
+          <label for="liv_fixe">Salaire fixe</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="paie_livreur" id="liv_commission" value="commission" data-q="1" onchange="updateProgress();">
+          <label for="liv_commission">Commission</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="paie_livreur" id="liv_deux" value="les_deux" data-q="1" onchange="updateProgress();">
+          <label for="liv_deux">Les deux</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Comment gérez-vous les retours de pain invendu ?</label>
+      <textarea name="retours_pain" data-q="1" placeholder="Ex : le livreur rapporte le pain invendu et on le compte à son retour"></textarea>
+    </div>
+  </div>
+
+  <!-- Section 4 : La production -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">La production</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Combien de fournées faites-vous par jour en moyenne ?</label>
+      <input type="text" name="nb_fournees" data-q="1" placeholder="Ex : 3 fournées par jour">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Notez-vous déjà les quantités produites quelque part ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="suivi_prod" id="prod_cahier" value="cahier" data-q="1" onchange="updateProgress();">
+          <label for="prod_cahier">Cahier</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="suivi_prod" id="prod_tel" value="telephone" data-q="1" onchange="updateProgress();">
+          <label for="prod_tel">Téléphone</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="suivi_prod" id="prod_tete" value="de_tete" data-q="1" onchange="updateProgress();">
+          <label for="prod_tete">De tête</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Que faites-vous du pain invendu en fin de journée ?</label>
+      <textarea name="pain_invendu" data-q="1" placeholder="Ex : on le vend moins cher, on le donne, on le jette…"></textarea>
+    </div>
+  </div>
+
+  <!-- Section 5 : Les fournisseurs -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">Les fournisseurs et les achats</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Combien de fournisseurs principaux avez-vous ?</label>
+      <span class="question-hint">Farine, levure, sel, gaz/gasoil…</span>
+      <input type="text" name="nb_fournisseurs" data-q="1" placeholder="Ex : 3 fournisseurs">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Achetez-vous à crédit ou comptant ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="achat_mode" id="achat_comptant" value="comptant" data-q="1" onchange="toggleConditional('achat_credit_detail', false); updateProgress();">
+          <label for="achat_comptant">Comptant</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="achat_mode" id="achat_credit" value="credit" data-q="1" onchange="toggleConditional('achat_credit_detail', true); updateProgress();">
+          <label for="achat_credit">À crédit</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="achat_mode" id="achat_deux" value="les_deux" data-q="1" onchange="toggleConditional('achat_credit_detail', true); updateProgress();">
+          <label for="achat_deux">Les deux</label>
+        </div>
+      </div>
+      <div class="conditional" id="achat_credit_detail">
+        <label class="question-label">Quelles sont les conditions de paiement ?</label>
+        <input type="text" name="conditions_paiement" placeholder="Ex : paiement à la livraison suivante">
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 6 : Les dépenses -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div class="section-title">Les dépenses</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Quelles sont vos charges régulières ?</label>
+      <span class="question-hint">Électricité, eau, gaz, gasoil, entretien du four, transport…</span>
+      <textarea name="charges" data-q="1" placeholder="Listez vos dépenses régulières ici"></textarea>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Y a-t-il d'autres dépenses à prendre en compte ?</label>
+      <textarea name="autres_depenses" data-q="1" placeholder="Toute autre dépense non mentionnée"></textarea>
+    </div>
+  </div>
+
+  <!-- Section 7 : Le personnel -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">7</div>
+      <div class="section-title">Le personnel</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Combien d'employés avez-vous au total ?</label>
+      <input type="text" name="nb_employes" data-q="1" placeholder="Ex : 6 employés">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Quels sont leurs rôles ?</label>
+      <span class="question-hint">Exemple : 2 boulangers, 1 vendeur, 3 livreurs…</span>
+      <textarea name="roles_employes" data-q="1" placeholder="Décrivez les rôles de chacun"></textarea>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Comment les payez-vous ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="mode_paie" id="paie_mensuel" value="mensuel" data-q="1" onchange="updateProgress();">
+          <label for="paie_mensuel">Mensuel fixe</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="mode_paie" id="paie_journalier" value="journalier" data-q="1" onchange="updateProgress();">
+          <label for="paie_journalier">Journalier</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="mode_paie" id="paie_tache" value="tache" data-q="1" onchange="updateProgress();">
+          <label for="paie_tache">À la tâche</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="mode_paie" id="paie_mixte" value="mixte" data-q="1" onchange="updateProgress();">
+          <label for="paie_mixte">Ça dépend</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 8 : Fonctionnement -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">8</div>
+      <div class="section-title">Le fonctionnement au quotidien</div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Quels sont vos horaires de travail ?</label>
+      <span class="question-hint">Heure de début de production, ouverture de la vente, fermeture</span>
+      <input type="text" name="horaires" data-q="1" placeholder="Ex : production à 4h, vente de 6h à 22h">
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Quelle version de Windows avez-vous ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="windows" id="win10" value="windows10" data-q="1" onchange="updateProgress();">
+          <label for="win10">Windows 10</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="windows" id="win11" value="windows11" data-q="1" onchange="updateProgress();">
+          <label for="win11">Windows 11</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="windows" id="win_other" value="autre" data-q="1" onchange="updateProgress();">
+          <label for="win_other">Autre / Je ne sais pas</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Y a-t-il autre chose que vous aimeriez voir dans l'application ?</label>
+      <span class="question-hint">Toute idée ou besoin est le bienvenu !</span>
+      <textarea name="suggestions" data-q="1" placeholder="Vos idées et suggestions ici…"></textarea>
+    </div>
+  </div>
+
+  <div class="submit-section">
+    <button class="btn-submit" onclick="showSummary()">✅ Voir le récapitulatif</button>
+  </div>
+</div>
+
+<!-- Summary overlay -->
+<div class="summary-overlay" id="summaryOverlay">
+  <div class="summary-card" id="summaryCard">
+    <h2>📋 Récapitulatif de vos réponses</h2>
+    <div class="success-msg">✅ Questionnaire complété ! Voici un résumé de vos réponses.</div>
+    <div id="summaryContent"></div>
+    <div class="summary-actions">
+      <button class="btn-copy" onclick="copySummary()">📋 Copier le texte</button>
+      <button class="btn-close" onclick="closeSummary()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div class="copied-toast" id="copiedToast">✅ Texte copié ! Vous pouvez le coller dans WhatsApp ou SMS.</div>
+
+<script>
+  // Progress tracking
+  function updateProgress() {
+    const allFields = document.querySelectorAll('[data-q]');
+    let filled = 0;
+    let total = 0;
+    const counted = new Set();
+
+    allFields.forEach(field => {
+      const name = field.name;
+      if (counted.has(name)) return;
+
+      if (field.type === 'radio') {
+        counted.add(name);
+        total++;
+        const radios = document.querySelectorAll(`[name="${name}"]`);
+        radios.forEach(r => { if (r.checked) filled++; });
+      } else {
+        counted.add(name);
+        total++;
+        if (field.value.trim() !== '') filled++;
+      }
+    });
+
+    const pct = Math.round((filled / total) * 100);
+    document.getElementById('progressFill').style.width = pct + '%';
+    document.getElementById('progressText').textContent = pct + '%';
+  }
+
+  // Listen for input
+  document.querySelectorAll('textarea, input[type="text"], input[type="number"]').forEach(el => {
+    el.addEventListener('input', updateProgress);
+  });
+
+  // Conditional show/hide
+  function toggleConditional(id, show) {
+    const el = document.getElementById(id);
+    if (show) el.classList.add('show');
+    else el.classList.remove('show');
+  }
+
+  // Summary
+  function showSummary() {
+    const sections = [
+      {
+        title: "🍞 Le pain et les prix",
+        fields: [
+          { label: "Types de pain", name: "types_pain" },
+          { label: "Prix", name: "prix_pain" },
+          { label: "Prix en gros différent", name: "prix_gros", type: "radio" },
+          { label: "Prix en gros", name: "prix_gros_detail" },
+        ]
+      },
+      {
+        title: "🏪 Les boutiquiers",
+        fields: [
+          { label: "Nombre de boutiquiers", name: "nb_boutiquiers" },
+          { label: "Type de commande", name: "commande_type", type: "radio" },
+          { label: "Mode de paiement", name: "paiement_bout", type: "radio" },
+          { label: "Fréquence de paiement", name: "frequence_paiement" },
+        ]
+      },
+      {
+        title: "🚲 Les livreurs",
+        fields: [
+          { label: "Nombre de livreurs", name: "nb_livreurs" },
+          { label: "Mode de paie", name: "paie_livreur", type: "radio" },
+          { label: "Gestion des retours", name: "retours_pain" },
+        ]
+      },
+      {
+        title: "🔥 La production",
+        fields: [
+          { label: "Fournées par jour", name: "nb_fournees" },
+          { label: "Suivi actuel", name: "suivi_prod", type: "radio" },
+          { label: "Pain invendu", name: "pain_invendu" },
+        ]
+      },
+      {
+        title: "📦 Les fournisseurs",
+        fields: [
+          { label: "Nombre de fournisseurs", name: "nb_fournisseurs" },
+          { label: "Mode d'achat", name: "achat_mode", type: "radio" },
+          { label: "Conditions de paiement", name: "conditions_paiement" },
+        ]
+      },
+      {
+        title: "💰 Les dépenses",
+        fields: [
+          { label: "Charges régulières", name: "charges" },
+          { label: "Autres dépenses", name: "autres_depenses" },
+        ]
+      },
+      {
+        title: "👥 Le personnel",
+        fields: [
+          { label: "Nombre d'employés", name: "nb_employes" },
+          { label: "Rôles", name: "roles_employes" },
+          { label: "Mode de paie", name: "mode_paie", type: "radio" },
+        ]
+      },
+      {
+        title: "⏰ Fonctionnement quotidien",
+        fields: [
+          { label: "Horaires", name: "horaires" },
+          { label: "Version Windows", name: "windows", type: "radio" },
+          { label: "Suggestions", name: "suggestions" },
+        ]
+      }
+    ];
+
+    let html = '';
+    sections.forEach(section => {
+      html += `<div class="summary-section"><h3>${section.title}</h3>`;
+      section.fields.forEach(field => {
+        let value = '';
+        if (field.type === 'radio') {
+          const checked = document.querySelector(`[name="${field.name}"]:checked`);
+          value = checked ? checked.value : '—';
+        } else {
+          const el = document.querySelector(`[name="${field.name}"]`);
+          value = el && el.value.trim() ? el.value.trim() : '—';
+        }
+        if (value !== '—') {
+          html += `<div class="summary-item"><strong>${field.label} :</strong> ${value}</div>`;
+        }
+      });
+      html += '</div>';
+    });
+
+    document.getElementById('summaryContent').innerHTML = html;
+    document.getElementById('summaryOverlay').classList.add('show');
+  }
+
+  function closeSummary() {
+    document.getElementById('summaryOverlay').classList.remove('show');
+  }
+
+  function copySummary() {
+    const sections = document.querySelectorAll('.summary-section');
+    let text = "📋 QUESTIONNAIRE BOULANGERIE\n\n";
+    sections.forEach(section => {
+      const title = section.querySelector('h3').textContent;
+      text += title + "\n";
+      section.querySelectorAll('.summary-item').forEach(item => {
+        text += "  • " + item.textContent + "\n";
+      });
+      text += "\n";
+    });
+
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById('copiedToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    }).catch(() => {
+      // Fallback
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      const toast = document.getElementById('copiedToast');
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2500);
+    });
+  }
+
+  // Close overlay on background click
+  document.getElementById('summaryOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeSummary();
+  });
+</script>
+</body>
+</html>
