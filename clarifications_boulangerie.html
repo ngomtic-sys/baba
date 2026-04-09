@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questions de clarification — Boulangerie</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a3a5c;
+    --accent: #d4a24e;
+    --accent-light: #f5e6c8;
+    --bg: #faf7f2;
+    --card-bg: #ffffff;
+    --text: #2c2c2c;
+    --text-light: #6b7280;
+    --border: #e5e0d8;
+    --input-bg: #faf8f5;
+    --success: #2d8a4e;
+    --success-bg: #e8f5ed;
+    --info-bg: #eef3f8;
+    --shadow: 0 2px 12px rgba(26, 58, 92, 0.08);
+    --line-color: #cccccc;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  .header {
+    background: var(--primary);
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -20%;
+    width: 140%;
+    height: 200%;
+    background: radial-gradient(ellipse at center, rgba(212, 162, 78, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 0.4rem;
+    position: relative;
+  }
+
+  .header p {
+    color: var(--accent-light);
+    font-size: 0.92rem;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .bread-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.8rem;
+    display: block;
+    position: relative;
+  }
+
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+  }
+
+  .intro-card {
+    background: var(--info-bg);
+    border-radius: 12px;
+    padding: 1rem 1.2rem;
+    margin-bottom: 1.5rem;
+    border-left: 4px solid var(--primary);
+    font-size: 0.9rem;
+    color: var(--primary);
+    line-height: 1.5;
+  }
+
+  .section {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.2rem;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    transition: border-color 0.3s;
+  }
+
+  .section:hover {
+    border-color: var(--accent);
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 2px solid var(--accent-light);
+  }
+
+  .section-number {
+    background: var(--primary);
+    color: #fff;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.1rem;
+    color: var(--primary);
+  }
+
+  .context-box {
+    background: var(--accent-light);
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+    color: #7a6530;
+    line-height: 1.5;
+  }
+
+  .context-box strong {
+    color: var(--primary);
+  }
+
+  .question-group {
+    margin-bottom: 1.2rem;
+  }
+
+  .question-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .question-label {
+    font-weight: 600;
+    font-size: 0.92rem;
+    color: var(--text);
+    margin-bottom: 0.3rem;
+    display: block;
+  }
+
+  .question-hint {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+
+  textarea, input[type="text"] {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    color: var(--text);
+    background: var(--input-bg);
+    transition: all 0.3s;
+    outline: none;
+    resize: vertical;
+  }
+
+  textarea:focus, input[type="text"]:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212, 162, 78, 0.15);
+    background: #fff;
+  }
+
+  textarea { min-height: 80px; }
+
+  .radio-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+  }
+
+  .radio-option { position: relative; }
+
+  .radio-option input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .radio-option label {
+    display: block;
+    padding: 0.5rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: var(--input-bg);
+    font-weight: 500;
+  }
+
+  .radio-option input:checked + label {
+    background: var(--accent-light);
+    border-color: var(--accent);
+    color: var(--primary);
+  }
+
+  .radio-option label:hover { border-color: var(--accent); }
+
+  .conditional {
+    display: none;
+    margin-top: 0.8rem;
+    padding-left: 0.5rem;
+    border-left: 3px solid var(--accent-light);
+    padding-top: 0.5rem;
+    padding-bottom: 0.2rem;
+  }
+
+  .conditional.show {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .submit-section {
+    text-align: center;
+    padding: 2rem 1rem;
+  }
+
+  .btn-submit {
+    background: linear-gradient(135deg, var(--primary), #264d73);
+    color: #fff;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 4px 15px rgba(26, 58, 92, 0.3);
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 58, 92, 0.4);
+  }
+
+  .summary-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .summary-overlay.show { display: flex; }
+
+  .summary-card {
+    background: var(--card-bg);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    max-width: 600px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+
+  .summary-card h2 {
+    font-family: 'DM Serif Display', serif;
+    color: var(--primary);
+    margin-bottom: 0.5rem;
+    font-size: 1.3rem;
+  }
+
+  .summary-card .success-msg {
+    background: var(--success-bg);
+    color: var(--success);
+    padding: 0.8rem 1rem;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .summary-section { margin-bottom: 1rem; }
+
+  .summary-section h3 {
+    font-size: 0.95rem;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+    font-weight: 600;
+  }
+
+  .summary-item {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.88rem;
+  }
+
+  .summary-item strong { color: var(--primary); }
+
+  .summary-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .btn-copy, .btn-close {
+    flex: 1;
+    min-width: 140px;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .btn-copy { background: var(--accent); color: #fff; }
+  .btn-copy:hover { background: #c4932e; }
+  .btn-close { background: var(--border); color: var(--text); }
+  .btn-close:hover { background: #d5d0c8; }
+
+  .copied-toast {
+    display: none;
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--success);
+    color: #fff;
+    padding: 0.7rem 1.5rem;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    z-index: 200;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  .copied-toast.show {
+    display: block;
+    animation: toastIn 0.3s ease, toastOut 0.3s ease 2s forwards;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+    to { opacity: 1; transform: translateX(-50%) translateY(0); }
+  }
+
+  @keyframes toastOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+  }
+
+  @media (max-width: 480px) {
+    .header h1 { font-size: 1.3rem; }
+    .section { padding: 1.2rem; }
+    .container { padding: 1rem 0.75rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="bread-icon">🔍</span>
+  <h1>Questions de clarification</h1>
+  <p>Quelques précisions pour bien adapter l'application à votre boulangerie</p>
+</div>
+
+<div class="container">
+
+  <div class="intro-card">
+    Merci pour vos réponses au premier questionnaire ! J'ai besoin de quelques précisions pour être sûr de bien comprendre votre fonctionnement avant de développer l'application.
+  </div>
+
+  <!-- Question 1 : Fournées -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">1</div>
+      <div class="section-title">La production</div>
+    </div>
+    <div class="context-box">
+      <strong>Votre réponse précédente :</strong> 3400 fournées par jour
+    </div>
+    <div class="question-group">
+      <label class="question-label">Vous produisez 3400 pains par jour, c'est ça ?</label>
+      <span class="question-hint">On veut être sûr que c'est le nombre de pains et non le nombre de fournées</span>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="confirm_production" id="prod_oui" value="oui_3400_pains" onchange="toggleConditional('prod_detail', false);">
+          <label for="prod_oui">Oui, 3400 pains</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="confirm_production" id="prod_non" value="non" onchange="toggleConditional('prod_detail', true);">
+          <label for="prod_non">Non, c'est différent</label>
+        </div>
+      </div>
+      <div class="conditional" id="prod_detail">
+        <label class="question-label">Combien de pains produisez-vous par jour ?</label>
+        <input type="text" name="nb_pains_jour" placeholder="Ex : 2000 pains par jour">
+        <div style="margin-top:0.8rem;">
+          <label class="question-label">Et combien de fournées ça représente ?</label>
+          <input type="text" name="nb_fournees_reel" placeholder="Ex : 4 fournées">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question 2 : Prix en gros -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">2</div>
+      <div class="section-title">Le prix en gros</div>
+    </div>
+    <div class="context-box">
+      <strong>Votre réponse précédente :</strong> Prix en gros = 150 FCFA. Mais le grand pain est déjà à 150 FCFA au comptoir.
+    </div>
+    <div class="question-group">
+      <label class="question-label">Quel est le prix en gros pour chaque type de pain ?</label>
+      <span class="question-hint">Indiquez le prix que le boutiquier paie pour chaque taille</span>
+      <div style="display:flex;flex-direction:column;gap:0.6rem;">
+        <div>
+          <label class="question-hint" style="font-style:normal;color:var(--text);">Grand pain (comptoir : 150 FCFA) → prix en gros :</label>
+          <input type="text" name="gros_grand" placeholder="Ex : 125 FCFA">
+        </div>
+        <div>
+          <label class="question-hint" style="font-style:normal;color:var(--text);">Pain moyen (comptoir : 100 FCFA) → prix en gros :</label>
+          <input type="text" name="gros_moyen" placeholder="Ex : 75 FCFA">
+        </div>
+        <div>
+          <label class="question-hint" style="font-style:normal;color:var(--text);">Petit pain (comptoir : 50 FCFA) → prix en gros :</label>
+          <input type="text" name="gros_petit" placeholder="Ex : 40 FCFA">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question 3 : Livreurs vs Chauffeurs -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">3</div>
+      <div class="section-title">Livreurs et chauffeurs</div>
+    </div>
+    <div class="context-box">
+      <strong>Votre réponse précédente :</strong> 6 livreurs dans une section, mais 4 livreurs et 4 chauffeurs dans la section personnel.
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Chauffeur et livreur, c'est le même rôle ou c'est différent ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="chauffeur_livreur" id="cl_meme" value="meme" onchange="toggleConditional('cl_detail', false); toggleConditional('cl_different', false);">
+          <label for="cl_meme">C'est la même chose</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="chauffeur_livreur" id="cl_diff" value="different" onchange="toggleConditional('cl_detail', true); toggleConditional('cl_different', true);">
+          <label for="cl_diff">C'est différent</label>
+        </div>
+      </div>
+      <div class="conditional" id="cl_different">
+        <label class="question-label">Quel est le rôle du chauffeur ?</label>
+        <textarea name="role_chauffeur" placeholder="Ex : le chauffeur conduit le véhicule, le livreur distribue le pain aux boutiques"></textarea>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Au total, combien de personnes livrent le pain ?</label>
+      <input type="text" name="nb_livreurs_total" placeholder="Ex : 6 personnes">
+    </div>
+  </div>
+
+  <!-- Question 4 : Pantié -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">4</div>
+      <div class="section-title">Le rôle du pantié</div>
+    </div>
+    <div class="context-box">
+      <strong>Votre réponse précédente :</strong> 1 pantié dans l'équipe
+    </div>
+    <div class="question-group">
+      <label class="question-label">Le pantié, c'est la personne qui prépare la pâte (le pétrin) ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="pantie_role" id="pantie_oui" value="oui_petrin" onchange="toggleConditional('pantie_detail', false);">
+          <label for="pantie_oui">Oui, c'est ça</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="pantie_role" id="pantie_non" value="autre" onchange="toggleConditional('pantie_detail', true);">
+          <label for="pantie_non">Non, c'est autre chose</label>
+        </div>
+      </div>
+      <div class="conditional" id="pantie_detail">
+        <label class="question-label">Quel est exactement son rôle ?</label>
+        <textarea name="pantie_description" placeholder="Décrivez ce que fait le pantié"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question 5 : Précision personnel -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">5</div>
+      <div class="section-title">Précision sur le personnel</div>
+    </div>
+    <div class="context-box">
+      <strong>Votre équipe :</strong> 7 boulangers, 1 gérant, 1 pantié, 4 chauffeurs, 1 gardien, 4 livreurs, 1 apprenti, 1 femme de ménage = 20 personnes
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Le gérant, c'est vous ou c'est un employé ?</label>
+      <div class="radio-group">
+        <div class="radio-option">
+          <input type="radio" name="gerant" id="gerant_moi" value="patron" onchange="toggleConditional('gerant_detail', false);">
+          <label for="gerant_moi">C'est moi (le patron)</label>
+        </div>
+        <div class="radio-option">
+          <input type="radio" name="gerant" id="gerant_employe" value="employe" onchange="toggleConditional('gerant_detail', true);">
+          <label for="gerant_employe">C'est un employé</label>
+        </div>
+      </div>
+      <div class="conditional" id="gerant_detail">
+        <label class="question-label">Quel est son rôle exactement ?</label>
+        <textarea name="gerant_role" placeholder="Ex : il supervise la production, il gère la caisse…"></textarea>
+      </div>
+    </div>
+
+    <div class="question-group">
+      <label class="question-label">Vous avez indiqué un mode de paie "mixte". Pouvez-vous préciser ?</label>
+      <span class="question-hint">Qui est payé comment ? Par exemple : boulangers au mois, livreurs à la commission…</span>
+      <textarea name="detail_paie" placeholder="Ex : boulangers salaire mensuel, livreurs à la commission, gardien salaire mensuel…"></textarea>
+    </div>
+  </div>
+
+  <!-- Question 6 : Autre -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-number">6</div>
+      <div class="section-title">Dernière question</div>
+    </div>
+    <div class="question-group">
+      <label class="question-label">Y a-t-il autre chose que vous souhaitez ajouter ou préciser ?</label>
+      <textarea name="autres_precisions" placeholder="Tout ce qui pourrait nous aider à mieux comprendre votre boulangerie"></textarea>
+    </div>
+  </div>
+
+  <div class="submit-section">
+    <button class="btn-submit" onclick="showSummary()">✅ Voir le récapitulatif</button>
+  </div>
+</div>
+
+<!-- Summary overlay -->
+<div class="summary-overlay" id="summaryOverlay">
+  <div class="summary-card">
+    <h2>📋 Récapitulatif des clarifications</h2>
+    <div class="success-msg">✅ Merci pour ces précisions ! Voici un résumé de vos réponses.</div>
+    <div id="summaryContent"></div>
+    <div class="summary-actions">
+      <button class="btn-copy" onclick="copySummary()">📋 Copier le texte</button>
+      <button class="btn-close" onclick="closeSummary()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<div class="copied-toast" id="copiedToast">✅ Texte copié ! Collez-le dans WhatsApp.</div>
+
+<script>
+  function toggleConditional(id, show) {
+    const el = document.getElementById(id);
+    if (el) {
+      if (show) el.classList.add('show');
+      else el.classList.remove('show');
+    }
+  }
+
+  function getVal(name) {
+    const el = document.querySelector(`[name="${name}"]`);
+    if (!el) return '—';
+    if (el.type === 'radio' || el.type === 'checkbox') {
+      const checked = document.querySelector(`[name="${name}"]:checked`);
+      return checked ? checked.value : '—';
+    }
+    return el.value.trim() || '—';
+  }
+
+  function showSummary() {
+    const fields = [
+      { section: "🔥 Production", items: [
+        { label: "3400 = nombre de pains ?", name: "confirm_production" },
+        { label: "Nombre de pains/jour", name: "nb_pains_jour" },
+        { label: "Nombre de fournées", name: "nb_fournees_reel" },
+      ]},
+      { section: "💰 Prix en gros", items: [
+        { label: "Grand pain (gros)", name: "gros_grand" },
+        { label: "Pain moyen (gros)", name: "gros_moyen" },
+        { label: "Petit pain (gros)", name: "gros_petit" },
+      ]},
+      { section: "🚲 Livreurs et chauffeurs", items: [
+        { label: "Chauffeur = livreur ?", name: "chauffeur_livreur" },
+        { label: "Rôle du chauffeur", name: "role_chauffeur" },
+        { label: "Total personnes qui livrent", name: "nb_livreurs_total" },
+      ]},
+      { section: "👨‍🍳 Le pantié", items: [
+        { label: "Rôle du pantié", name: "pantie_role" },
+        { label: "Description", name: "pantie_description" },
+      ]},
+      { section: "👥 Personnel", items: [
+        { label: "Le gérant", name: "gerant" },
+        { label: "Rôle du gérant", name: "gerant_role" },
+        { label: "Détail mode de paie", name: "detail_paie" },
+      ]},
+      { section: "📝 Autre", items: [
+        { label: "Précisions supplémentaires", name: "autres_precisions" },
+      ]},
+    ];
+
+    let html = '';
+    fields.forEach(section => {
+      let hasContent = false;
+      let sectionHtml = `<div class="summary-section"><h3>${section.section}</h3>`;
+      section.items.forEach(field => {
+        const val = getVal(field.name);
+        if (val !== '—') {
+          hasContent = true;
+          sectionHtml += `<div class="summary-item"><strong>${field.label} :</strong> ${val}</div>`;
+        }
+      });
+      sectionHtml += '</div>';
+      if (hasContent) html += sectionHtml;
+    });
+
+    document.getElementById('summaryContent').innerHTML = html;
+    document.getElementById('summaryOverlay').classList.add('show');
+  }
+
+  function closeSummary() {
+    document.getElementById('summaryOverlay').classList.remove('show');
+  }
+
+  function copySummary() {
+    const sections = document.querySelectorAll('.summary-section');
+    let text = "📋 CLARIFICATIONS BOULANGERIE\n\n";
+    sections.forEach(section => {
+      const title = section.querySelector('h3').textContent;
+      text += title + "\n";
+      section.querySelectorAll('.summary-item').forEach(item => {
+        text += "  • " + item.textContent + "\n";
+      });
+      text += "\n";
+    });
+
+    navigator.clipboard.writeText(text).then(() => {
+      showToast();
+    }).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast();
+    });
+  }
+
+  function showToast() {
+    const toast = document.getElementById('copiedToast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  document.getElementById('summaryOverlay').addEventListener('click', function(e) {
+    if (e.target === this) closeSummary();
+  });
+</script>
+</body>
+</html>
